@@ -202,12 +202,6 @@ public class AddressSpace {
     public JsonObject jsonMetadata() {
         JsonObject metadata = new JsonObject();
         metadata.put("name", this.getName());
-        if (this.getNamespace() != null) {
-            JsonObject annotations = new JsonObject();
-            annotations.put("enmasse.io/namespace", this.getNamespace());
-            annotations.put("enmasse.io/realm-name", this.getNamespace());
-            metadata.put("annotations", annotations);
-        }
         return metadata;
     }
 

@@ -47,13 +47,16 @@ public class AddressProvisioner {
     private final BrokerSetGenerator clusterGenerator;
     private final Kubernetes kubernetes;
     private final EventLogger eventLogger;
+    private final String infraUuid;
 
-    public AddressProvisioner(AddressResolver addressResolver, AddressSpacePlan addressSpacePlan, BrokerSetGenerator clusterGenerator, Kubernetes kubernetes, EventLogger eventLogger) {
+    public AddressProvisioner(AddressResolver addressResolver, AddressSpacePlan addressSpacePlan, BrokerSetGenerator clusterGenerator, Kubernetes kubernetes, EventLogger eventLogger, String infraUuid) {
         this.addressResolver = addressResolver;
         this.addressSpacePlan = addressSpacePlan;
         this.clusterGenerator = clusterGenerator;
         this.kubernetes = kubernetes;
         this.eventLogger = eventLogger;
+        this.infraUuid = infraUuid;
+        this.pooledPattern = Pattern.compile("^broker-" + infraUuid + "-\\d+");
     }
 
     /**
@@ -248,7 +251,7 @@ public class AddressProvisioner {
                 } else if (resourceRequest.getAmount() < 1) {
                     boolean scheduled = scheduleAddress(resourceUsage, address, resourceRequest.getAmount());
                     if (!scheduled) {
-                        allocateBroker(resourceUsage, "broker-");
+                        allocateBroker(resourceUsage, "broker-" + infraUuid + "-");
                         if (!scheduleAddress(resourceUsage, address, resourceRequest.getAmount())) {
                             log.warn("Unable to find broker for scheduling {}", address);
                             return null;
@@ -416,7 +419,7 @@ public class AddressProvisioner {
         }
     }
 
-    private final Pattern pooledPattern = Pattern.compile("^broker-\\d+");
+    private final Pattern pooledPattern;
     private boolean scheduleAddress(Map<String, UsageInfo> usageMap, Address address, double credit) {
 
         address.putAnnotation(AnnotationKeys.CLUSTER_ID, "broker");

@@ -181,7 +181,7 @@ public class ConfigMapAddressSpaceApi implements AddressSpaceApi, ListerWatcher<
 
     @Override
     public AddressApi withAddressSpace(AddressSpace addressSpace) {
-        return new ConfigMapAddressApi(client, addressSpace.getAnnotation(AnnotationKeys.NAMESPACE));
+        return new ConfigMapAddressApi(client, client.getNamespace(), addressSpace.getShortUid());
     }
 
     private ConfigMapList list(String namespace) {

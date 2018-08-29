@@ -92,7 +92,7 @@ function description(list) {
 function AddressSource(address_space, config) {
     this.address_space = address_space;
     this.config = config || {};
-    var options = myutils.merge({selector: 'type=address-config'}, this.config);
+    var options = myutils.merge({selector: 'type=address-config,infraUuid=' + address_space.uuid}, this.config);
     events.EventEmitter.call(this);
     this.watcher = kubernetes.watch('configmaps', options);
     this.watcher.on('updated', this.updated.bind(this));
@@ -235,7 +235,9 @@ AddressSource.prototype.create_address = function (definition) {
         metadata: {
             name: configmap_name,
             labels: {
-                type: 'address-config'
+                type: 'address-config',
+                infraUuid: this.address_space.uuid,
+                infraType: 'any'
             },
             annotations: {
                 addressSpace: this.address_space.name,
@@ -263,6 +265,10 @@ function extract_address_plan (object) {
     return JSON.parse(object.data.definition);
 }
 
+function extract_address_space_plan (object) {
+    return JSON.parse(object.data.definition);
+}
+
 function display_order (plan_a, plan_b) {
     // explicitly ordered plans always come before those with undefined order
     var a = plan_a.displayOrder === undefined ? Number.MAX_VALUE : plan_a.displayOrder;
@@ -280,29 +286,43 @@ function extract_plan_details (plan) {
 }
 
 AddressSource.prototype.get_address_types = function () {
-    var options = myutils.merge({selector: 'type=address-plan'}, this.config);
-    return kubernetes.get('configmaps', options).then(function (configmaps) {
-        //extract plans
-        var plans = configmaps.items.map(extract_address_plan);
-        plans.sort(display_order);
-        //group by addressType
-        var types = [];
-        var by_type = plans.reduce(function (map, plan) {
-            var list = map[plan.addressType];
-            if (list === undefined) {
-                list = [];
-                map[plan.addressType] = list;
-                types.push(plan.addressType);
-            }
-            list.push(plan);
-            return map;
-        }, {});
-        var results = [];
-        types.forEach(function (type) {
-            results.push({name:type, plans:by_type[type].map(extract_plan_details)});
+    var address_space_plan_options = myutils.merge({selector: 'type=address-space-plan'}, this.config);
+    var address_plan_options = myutils.merge({selector: 'type=address-plan'}, this.config);
+    var address_space_plan_name = this.address_space.plan;
+    return kubernetes.get('configmaps', address_space_plan_options).then(function (configmaps) {
+            var address_space_plan = configmaps.items.map(extract_address_space_plan)
+                .filter(function (plan) {
+                    return plan.metadata.name === address_space_plan_name;
+                })[0];
+            return address_space_plan.addressPlans;
+        }).then(function (supported_plans) {
+            return kubernetes.get('configmaps', address_plan_options).then(function (configmaps) {
+                //extract plans
+                var plans = configmaps.items.map(extract_address_plan);
+                // remove plans not part of address space plan
+                plans = plans.filter(function (p) {
+                    return supported_plans.includes(p.metadata.name)
+                });
+                plans.sort(display_order);
+                //group by addressType
+                var types = [];
+                var by_type = plans.reduce(function (map, plan) {
+                    var list = map[plan.addressType];
+                    if (list === undefined) {
+                        list = [];
+                        map[plan.addressType] = list;
+                        types.push(plan.addressType);
+                    }
+                    list.push(plan);
+                    return map;
+                }, {});
+                var results = [];
+                types.forEach(function (type) {
+                    results.push({name:type, plans:by_type[type].map(extract_plan_details)});
+                });
+                return results;
+            });
         });
-        return results;
-    });
 };
 
 module.exports = AddressSource;

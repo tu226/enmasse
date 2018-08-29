@@ -29,6 +29,7 @@ import static io.enmasse.k8s.api.EventLogger.Type.Warning;
 public class AddressController extends AbstractVerticle implements Watcher<Address> {
     private static final Logger log = LoggerFactory.getLogger(AddressController.class);
     private final String addressSpaceName;
+    private final String infraUuid;
     private final AddressApi addressApi;
     private final Kubernetes kubernetes;
     private final BrokerSetGenerator clusterGenerator;
@@ -39,8 +40,9 @@ public class AddressController extends AbstractVerticle implements Watcher<Addre
     private final Duration recheckInterval;
     private final Duration resyncInterval;
 
-    public AddressController(String addressSpaceName, AddressApi addressApi, Kubernetes kubernetes, BrokerSetGenerator clusterGenerator, String certDir, EventLogger eventLogger, SchemaProvider schemaProvider, Duration recheckInterval, Duration resyncInterval) {
+    public AddressController(String addressSpaceName, String infraUuid, AddressApi addressApi, Kubernetes kubernetes, BrokerSetGenerator clusterGenerator, String certDir, EventLogger eventLogger, SchemaProvider schemaProvider, Duration recheckInterval, Duration resyncInterval) {
         this.addressSpaceName = addressSpaceName;
+        this.infraUuid = infraUuid;
         this.addressApi = addressApi;
         this.kubernetes = kubernetes;
         this.clusterGenerator = clusterGenerator;
@@ -101,7 +103,7 @@ public class AddressController extends AbstractVerticle implements Watcher<Addre
         AddressSpacePlan addressSpacePlan = addressSpaceType.getPlans().get(0);
 
         long resolvedPlan = System.nanoTime();
-        AddressProvisioner provisioner = new AddressProvisioner(addressResolver, addressSpacePlan, clusterGenerator, kubernetes, eventLogger);
+        AddressProvisioner provisioner = new AddressProvisioner(addressResolver, addressSpacePlan, clusterGenerator, kubernetes, eventLogger, infraUuid);
 
         Map<Status.Phase, Long> countByPhase = countPhases(addressSet);
         log.info("Total: {}, Active: {}, Configuring: {}, Pending: {}, Terminating: {}, Failed: {}", addressSet.size(), countByPhase.get(Active), countByPhase.get(Configuring), countByPhase.get(Pending), countByPhase.get(Terminating), countByPhase.get(Failed));

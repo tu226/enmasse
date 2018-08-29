@@ -92,10 +92,6 @@ public abstract class OSBServiceBase {
                     .build();
         }
 
-        if (addressSpace.getAnnotation(AnnotationKeys.NAMESPACE) == null) {
-            addressSpace.putAnnotation(AnnotationKeys.NAMESPACE, KubeUtil.sanitizeName(addressSpace.getNamespace() + "-" + addressSpace.getName()));
-        }
-
         if (addressSpace.getAnnotation(AnnotationKeys.REALM_NAME) == null) {
             addressSpace.putAnnotation(AnnotationKeys.REALM_NAME, KubeUtil.sanitizeName(addressSpace.getNamespace() + "-" + addressSpace.getName()));
         }

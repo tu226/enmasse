@@ -52,7 +52,11 @@ function merge() {
 function BrokerStats (env) {
     this.queues = {};
     this.brokers = create_podgroup();
-    this.watcher = pod_watcher.watch('role=broker', env);
+    var selector = 'role=broker';
+    if (process.env.INFRA_UUID) {
+        selector += ",infraUuid=" + process.env.INFRA_UUID;
+    }
+    this.watcher = pod_watcher.watch(selector, env);
     this.watcher.on('updated', this.on_updated.bind(this));
 }
 

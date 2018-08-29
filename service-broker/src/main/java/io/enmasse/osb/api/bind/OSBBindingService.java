@@ -120,7 +120,7 @@ public class OSBBindingService extends OSBServiceBase {
                     credentials.put(prefix + portName + "Port", String.format("%d", servicePort.getValue()));
                 }
                 endpointSpec.getCertSpec().ifPresent(certSpec -> {
-                    String cert = getAuthApi().getCert(certSpec.getSecretName(), addressSpace.getAnnotation(AnnotationKeys.NAMESPACE));
+                    String cert = getAuthApi().getCert(certSpec.getSecretName());
                     credentials.put(prefix + "Cert.pem", cert);
                 });
             }

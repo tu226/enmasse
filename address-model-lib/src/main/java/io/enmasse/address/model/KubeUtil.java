@@ -40,11 +40,11 @@ public class KubeUtil {
     }
 
     public static String getAddressSpaceCaSecretName(AddressSpace addressSpace) {
-        return sanitizeName("ca-" + addressSpace.getName());
+        return sanitizeName("ca-" + addressSpace.getName() + "." + addressSpace.getShortUid());
     }
 
     public static String getAddressSpaceExternalCaSecretName(AddressSpace addressSpace) {
-        return sanitizeName("route-ca-" + addressSpace.getName());
+        return sanitizeName("route-ca-" + addressSpace.getName() + "." + addressSpace.getShortUid());
     }
 
     public static void validateName(String name) {

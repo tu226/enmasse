@@ -7,7 +7,6 @@
   when: multitenant or (not multitenant and address_space_type == "brokered")
 - import_role:
     name: address_controller_singletenant
-  when: not multitenant
 - import_role:
     name: none_authservice
   when: '"none" in authentication_services'

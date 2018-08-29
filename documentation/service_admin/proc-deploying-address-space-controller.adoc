@@ -20,27 +20,6 @@ NOTE: To install {ProductName} on {PlatformName} , you must have `cluster-admin`
 {cmdcli} create sa enmasse-admin
 ----
 
-ifeval::["{cmdcli}" == "oc"]
-. Create cluster-wide roles used by the `enmasse-admin` service account:
-+
-[options="nowrap"]
-----
-oc login -u system:admin
-oc create -f ./resources/cluster-roles/openshift/address-space-controller.yaml
-----
-
-. Grant privileges to the service account:
-+
-[options="nowrap"]
-----
-oc login -u system:admin
-oc policy add-role-to-user admin system:serviceaccount:enmasse:enmasse-admin
-oc adm policy add-cluster-role-to-user enmasse.io:address-space-controller system:serviceaccount:enmasse:enmasse-admin
-----
-+
-*Note*: You can log in again as the regular user after this step.
-endif::[]
-
 . Install the default plan and resource configuration:
 +
 [options="nowrap",subs="attributes"]

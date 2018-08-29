@@ -34,6 +34,7 @@ public class HttpAddressSpaceService {
     private final SchemaProvider schemaProvider;
 
     private final AddressSpaceApi addressSpaceApi;
+
     public HttpAddressSpaceService(AddressSpaceApi addressSpaceApi, SchemaProvider schemaProvider) {
         this.addressSpaceApi = addressSpaceApi;
         this.schemaProvider = schemaProvider;
@@ -104,10 +105,6 @@ public class HttpAddressSpaceService {
             addressSpace = new AddressSpace.Builder(addressSpace)
                     .setNamespace(namespace)
                     .build();
-        }
-
-        if (addressSpace.getAnnotation(AnnotationKeys.NAMESPACE) == null) {
-            addressSpace.putAnnotation(AnnotationKeys.NAMESPACE, KubeUtil.sanitizeName(addressSpace.getNamespace() + "-" + addressSpace.getName()));
         }
 
         if (addressSpace.getAnnotation(AnnotationKeys.REALM_NAME) == null) {

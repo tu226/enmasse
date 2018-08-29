@@ -43,7 +43,7 @@ public class AddressProvisionerTest {
         AddressResolver resolver = new AddressResolver(standardControllerSchema.getSchema(), standardControllerSchema.getType());
         EventLogger logger = mock(EventLogger.class);
 
-        return new AddressProvisioner(resolver, standardControllerSchema.getPlan(), generator, kubernetes, logger);
+        return new AddressProvisioner(resolver, standardControllerSchema.getPlan(), generator, kubernetes, logger, "1234");
     }
 
     private AddressProvisioner createProvisioner(List<ResourceAllowance> resourceAllowances) {
@@ -51,7 +51,7 @@ public class AddressProvisionerTest {
         AddressResolver resolver = new AddressResolver(standardControllerSchema.getSchema(), standardControllerSchema.getType());
         EventLogger logger = mock(EventLogger.class);
 
-        return new AddressProvisioner(resolver, standardControllerSchema.getPlan(), generator, kubernetes, logger);
+        return new AddressProvisioner(resolver, standardControllerSchema.getPlan(), generator, kubernetes, logger, "1234");
     }
 
     @Test
@@ -109,9 +109,9 @@ public class AddressProvisionerTest {
     @Test
     public void testQuotaCheck() {
         Set<Address> addresses = new HashSet<>();
-        addresses.add(createQueue("q1", "small-queue").putAnnotation(AnnotationKeys.BROKER_ID, "broker-0"));
-        addresses.add(createQueue("q2", "small-queue").putAnnotation(AnnotationKeys.BROKER_ID, "broker-0"));
-        addresses.add(createQueue("q3", "small-queue").putAnnotation(AnnotationKeys.BROKER_ID, "broker-1"));
+        addresses.add(createQueue("q1", "small-queue").putAnnotation(AnnotationKeys.BROKER_ID, "broker-1234-0"));
+        addresses.add(createQueue("q2", "small-queue").putAnnotation(AnnotationKeys.BROKER_ID, "broker-1234-0"));
+        addresses.add(createQueue("q3", "small-queue").putAnnotation(AnnotationKeys.BROKER_ID, "broker-1234-1"));
 
         AddressProvisioner provisioner = createProvisioner();
         Map<String, Map<String, UsageInfo>> usageMap = provisioner.checkUsage(addresses);
@@ -169,7 +169,7 @@ public class AddressProvisionerTest {
 
         assertTrue(queue.getStatus().getMessages().toString(), queue.getStatus().getMessages().isEmpty());
         assertThat(queue.getStatus().getPhase(), is(Status.Phase.Configuring));
-        assertThat(queue.getAnnotations().get(AnnotationKeys.BROKER_ID), is("broker-0"));
+        assertThat(queue.getAnnotations().get(AnnotationKeys.BROKER_ID), is("broker-1234-0"));
     }
 
     private static RouterCluster createDeployment(int replicas) {
@@ -180,8 +180,8 @@ public class AddressProvisionerTest {
     public void testScalingColocated() {
         Set<Address> addresses = new HashSet<>();
         addresses.add(createAddress("a1", "anycast", "small-anycast"));
-        addresses.add(createAddress("q1", "queue", "small-queue").putAnnotation(AnnotationKeys.BROKER_ID, "broker-0"));
-        addresses.add(createAddress("q2", "queue", "small-queue").putAnnotation(AnnotationKeys.BROKER_ID, "broker-0"));
+        addresses.add(createAddress("q1", "queue", "small-queue").putAnnotation(AnnotationKeys.BROKER_ID, "broker-1234-0"));
+        addresses.add(createAddress("q2", "queue", "small-queue").putAnnotation(AnnotationKeys.BROKER_ID, "broker-1234-0"));
 
         AddressProvisioner provisioner = createProvisioner();
         Map<String, Map<String, UsageInfo>> usageMap = provisioner.checkUsage(addresses);
@@ -195,7 +195,7 @@ public class AddressProvisionerTest {
 
         assertTrue(queue.getStatus().getMessages().toString(), queue.getStatus().getMessages().isEmpty());
         assertThat(queue.getStatus().getPhase(), is(Status.Phase.Configuring));
-        assertThat(queue.getAnnotations().get(AnnotationKeys.BROKER_ID), is("broker-1"));
+        assertThat(queue.getAnnotations().get(AnnotationKeys.BROKER_ID), is("broker-1234-1"));
     }
 
     @Test

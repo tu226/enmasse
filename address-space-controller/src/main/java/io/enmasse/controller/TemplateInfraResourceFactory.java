@@ -44,9 +44,12 @@ public class TemplateInfraResourceFactory implements InfraResourceFactory {
             AuthenticationServiceResolver authResolver = authResolverFactory.getResolver(authService.getType());
 
             parameters.put(TemplateParameter.ADDRESS_SPACE, addressSpace.getName());
+            parameters.put(TemplateParameter.INFRA_UUID, addressSpace.getShortUid());
             parameters.put(TemplateParameter.ADDRESS_SPACE_NAMESPACE, addressSpace.getNamespace());
             parameters.put(TemplateParameter.AUTHENTICATION_SERVICE_HOST, authResolver.getHost(authService));
             parameters.put(TemplateParameter.AUTHENTICATION_SERVICE_PORT, String.valueOf(authResolver.getPort(authService)));
+            parameters.put(TemplateParameter.ADDRESS_SPACE_ADMIN_SA, "sa-" + addressSpace.getShortUid());
+            parameters.put(TemplateParameter.ADDRESS_SPACE_PLAN, addressSpace.getPlan());
 
             authResolver.getCaSecretName(authService).ifPresent(secretName -> kubernetes.getSecret(secretName).ifPresent(secret -> parameters.put(TemplateParameter.AUTHENTICATION_SERVICE_CA_CERT, secret.getData().get("tls.crt"))));
             authResolver.getClientSecretName(authService).ifPresent(secret -> parameters.put(TemplateParameter.AUTHENTICATION_SERVICE_CLIENT_SECRET, secret));
@@ -56,10 +59,9 @@ public class TemplateInfraResourceFactory implements InfraResourceFactory {
             Map<String, CertSpec> serviceCertMapping = new HashMap<>();
             for (EndpointSpec endpoint : addressSpace.getEndpoints()) {
                     endpoint.getCertSpec().ifPresent(cert -> {
-                    serviceCertMapping.put(endpoint.getService(), cert);
+                        serviceCertMapping.put(endpoint.getService().split("-")[0], cert);
                 });
             }
-
             if (serviceCertMapping.containsKey("messaging")) {
                 parameters.put(TemplateParameter.MESSAGING_SECRET, serviceCertMapping.get("messaging").getSecretName());
             }

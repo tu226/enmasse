@@ -208,5 +208,10 @@ if (process.env.MESSAGING_SERVICE_HOST) {
     });
 }
 
-var pod_watcher = require('../lib/pod_watcher.js').watch('role=broker,addresstype=topic');
+var selector = 'role=broker,addresstype=topic';
+if (process.env.INFRA_UUID) {
+    selector += ",infraUuid=" + process.env.INFRA_UUID;
+}
+
+var pod_watcher = require('../lib/pod_watcher.js').watch(selector);
 pod_watcher.on('updated', topic_tracker(topics, create_topic));
