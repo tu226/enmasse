@@ -22,4 +22,5 @@ public interface AnnotationKeys {
     String UUID = "enmasse.io/uuid";
     String ENDPOINT = "enmasse.io/endpoint";
     String ADDRESS = "enmasse.io/address";
+    String INFRA_UUID = "enmasse.io/infra-uuid";
 }

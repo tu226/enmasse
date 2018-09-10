@@ -38,7 +38,7 @@ public class OpenShift extends Kubernetes {
             return endpoint;
         } else {
             log.info("Endpoint didn't resolve, falling back to service endpoint");
-            return getEndpoint(globalNamespace, "address-space-controller", "https");
+            return getEndpoint("address-space-controller", "https");
         }
     }
 
@@ -51,12 +51,12 @@ public class OpenShift extends Kubernetes {
             return endpoint;
         } else {
             log.info("Endpoint didn't resolve, falling back to service endpoint");
-            return getEndpoint(globalNamespace, "standard-authservice", "https");
+            return getEndpoint("standard-authservice", "https");
         }
     }
 
     @Override
-    public Endpoint getExternalEndpoint(String uuid, String endpointName) {
+    public Endpoint getExternalEndpoint(String endpointName) {
         OpenShiftClient openShift = client.adapt(OpenShiftClient.class);
         Route route = openShift.routes().inNamespace(globalNamespace).withName(endpointName).get();
         Endpoint endpoint = new Endpoint(route.getSpec().getHost(), 443);
@@ -77,10 +77,10 @@ public class OpenShift extends Kubernetes {
                     port = "secure-mqtt";
                     break;
                 default:
-                    throw new IllegalStateException(String.format("Endpoint '%s' with uuid '%s' doesn't exist.",
-                            endpointName, uuid));
+                    throw new IllegalStateException(String.format("Endpoint '%s' doesn't exist.",
+                            endpointName));
             }
-            return getEndpoint(namespace, endpointName, port);
+            return getEndpoint(endpointName, port);
         }
     }
 }

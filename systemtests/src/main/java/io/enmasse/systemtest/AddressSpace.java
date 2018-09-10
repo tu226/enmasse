@@ -14,6 +14,7 @@ public class AddressSpace {
     private String name;
     private String namespace;
     private String plan;
+    private String infraUuid;
     private AddressSpaceType type;
     private AuthService authService;
     private List<AddressSpaceEndpoint> endpoints = new ArrayList<>();
@@ -175,6 +176,10 @@ public class AddressSpace {
         this.authService = authService;
     }
 
+    public void setInfraUuid(String infraUuid) {
+        this.infraUuid = infraUuid;
+    }
+
     @Override
     public String toString() {
         StringBuilder addressSpaceString = new StringBuilder()
@@ -228,5 +233,9 @@ public class AddressSpace {
             endpointsJson.add(endpointJson);
         }
         return endpointsJson;
+    }
+
+    public String getInfraUuid() {
+        return infraUuid;
     }
 }

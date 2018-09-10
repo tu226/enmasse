@@ -157,7 +157,7 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
         }
         addressApiClient.createAddressSpaceList(spaces.toArray(new AddressSpace[0]));
         for (AddressSpace addressSpace : spaces) {
-            logCollector.startCollecting(addressSpace.getNamespace());
+            logCollector.startCollecting(addressSpace);
             addrSpacesResponse.add(TestUtils.waitForAddressSpaceReady(addressApiClient, addressSpace.getName()));
             if (!addressSpace.equals(getSharedAddressSpace())) {
                 addressSpaceList.add(addressSpace);
@@ -359,7 +359,7 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
     private void scaleInGlobal(String deployment, int numReplicas) throws InterruptedException {
         if (numReplicas >= 0) {
             TimeoutBudget budget = new TimeoutBudget(5, TimeUnit.MINUTES);
-            TestUtils.setReplicas(kubernetes, environment.namespace(), deployment, numReplicas, budget);
+            TestUtils.setReplicas(kubernetes, null, deployment, numReplicas, budget);
         } else {
             throw new IllegalArgumentException("'numReplicas' must be greater than 0");
         }
@@ -516,15 +516,15 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
     }
 
     protected Endpoint getMessagingRoute(AddressSpace addressSpace) {
-        Endpoint messagingEndpoint = addressSpace.getEndpointByServiceName("messaging");
+        Endpoint messagingEndpoint = addressSpace.getEndpointByServiceName("messaging-" + addressSpace.getInfraUuid());
         if (messagingEndpoint == null) {
-            String externalEndpointName = TestUtils.getExternalEndpointName(addressSpace, "messaging");
+            String externalEndpointName = TestUtils.getExternalEndpointName(addressSpace, "messaging-" + addressSpace.getInfraUuid());
             messagingEndpoint = kubernetes.getExternalEndpoint(addressSpace.getNamespace(), externalEndpointName);
         }
         if (TestUtils.resolvable(messagingEndpoint)) {
             return messagingEndpoint;
         } else {
-            return kubernetes.getEndpoint(addressSpace.getNamespace(), "messaging", "amqps");
+            return kubernetes.getEndpoint("messaging-" + addressSpace.getInfraUuid(), "amqps");
         }
     }
 
@@ -644,7 +644,10 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
     protected void waitForRouterReplicas(AddressSpace addressSpace, int expectedReplicas) throws
             InterruptedException {
         TimeoutBudget budget = new TimeoutBudget(3, TimeUnit.MINUTES);
-        TestUtils.waitForNReplicas(kubernetes, addressSpace.getNamespace(), expectedReplicas, Collections.singletonMap("name", "qdrouterd"), budget);
+        Map<String, String> labels = new HashMap<>();
+        labels.put("name", "qdrouterd");
+        labels.put("infraUuid", addressSpace.getInfraUuid());
+        TestUtils.waitForNReplicas(kubernetes, expectedReplicas, labels, budget);
     }
 
     protected void waitForAutoScale(AddressSpace addressSpace, Destination dest, int setValue, int expectedValue) throws Exception {
