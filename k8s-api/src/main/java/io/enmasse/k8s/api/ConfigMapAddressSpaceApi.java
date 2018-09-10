@@ -149,6 +149,10 @@ public class ConfigMapAddressSpaceApi implements AddressSpaceApi, ListerWatcher<
                 builder.setSelfLink("/apis/enmasse.io/v1alpha1/namespaces/" + addressSpace.getNamespace() + "/addressspaces/" + addressSpace.getName());
             }
 
+            if (addressSpace.getLabel(LabelKeys.INFRA_UUID) == null) {
+                addressSpace.putLabel(LabelKeys.INFRA_UUID, addressSpace.getShortUid());
+            }
+
             return builder.build();
         } catch (Exception e) {
             log.error("Error decoding address space", e);

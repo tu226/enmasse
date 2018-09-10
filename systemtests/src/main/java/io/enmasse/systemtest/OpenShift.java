@@ -56,9 +56,9 @@ public class OpenShift extends Kubernetes {
     }
 
     @Override
-    public Endpoint getExternalEndpoint(String namespace, String endpointName) {
+    public Endpoint getExternalEndpoint(String uuid, String endpointName) {
         OpenShiftClient openShift = client.adapt(OpenShiftClient.class);
-        Route route = openShift.routes().inNamespace(namespace).withName(endpointName).get();
+        Route route = openShift.routes().inNamespace(globalNamespace).withName(endpointName).get();
         Endpoint endpoint = new Endpoint(route.getSpec().getHost(), 443);
         log.info("Testing endpoint : " + endpoint);
         if (TestUtils.resolvable(endpoint)) {
@@ -77,8 +77,8 @@ public class OpenShift extends Kubernetes {
                     port = "secure-mqtt";
                     break;
                 default:
-                    throw new IllegalStateException(String.format("Endpoint '%s' in namespace '%s' doesn't exist.",
-                            endpointName, namespace));
+                    throw new IllegalStateException(String.format("Endpoint '%s' with uuid '%s' doesn't exist.",
+                            endpointName, uuid));
             }
             return getEndpoint(namespace, endpointName, port);
         }
