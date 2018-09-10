@@ -106,9 +106,9 @@ class ApiServerTest extends TestBase {
         createUser(addressSpace, luckyUser);
 
         //try to get all external endpoints
-        kubernetes.getExternalEndpoint(addressSpace.getNamespace(), endpointPrefix + "messaging");
-        kubernetes.getExternalEndpoint(addressSpace.getNamespace(), endpointPrefix + "console");
-        kubernetes.getExternalEndpoint(addressSpace.getNamespace(), endpointPrefix + "mqtt");
+        kubernetes.getExternalEndpoint(endpointPrefix + "messaging");
+        kubernetes.getExternalEndpoint(endpointPrefix + "console");
+        kubernetes.getExternalEndpoint(endpointPrefix + "mqtt");
 
         //messsaging
         Destination anycast = Destination.anycast("test-routes-anycast");

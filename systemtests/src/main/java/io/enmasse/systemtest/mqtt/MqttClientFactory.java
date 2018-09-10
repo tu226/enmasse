@@ -112,7 +112,7 @@ public class MqttClientFactory {
             mqttEndpoint = addressSpace.getEndpointByServiceName("mqtt");
             if (mqttEndpoint == null) {
                 String externalEndpointName = TestUtils.getExternalEndpointName(addressSpace, "mqtt");
-                mqttEndpoint = kubernetes.getExternalEndpoint(addressSpace.getNamespace(), externalEndpointName);
+                mqttEndpoint = kubernetes.getExternalEndpoint(externalEndpointName);
             }
             SSLContext sslContext = tryGetSSLContext("TLSv1.2", "TLSv1.1", "TLS", "TLSv1");
             sslContext.init(null, new X509TrustManager[]{new MyX509TrustManager()}, new SecureRandom());
@@ -126,7 +126,7 @@ public class MqttClientFactory {
             }
 
         } else {
-            mqttEndpoint = this.kubernetes.getEndpoint(addressSpace.getNamespace(), "mqtt", "mqtt");
+            mqttEndpoint = this.kubernetes.getEndpoint("mqtt", "mqtt");
         }
 
         if (username != null && password != null) {

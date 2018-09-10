@@ -138,11 +138,11 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
     //==================================== AddressSpace methods ======================================
     //================================================================================================
 
-    protected void createAddressSpace(AddressSpace addressSpace) throws Exception {
-        createAddressSpace(addressSpace, addressApiClient);
+    protected AddressSpace createAddressSpace(AddressSpace addressSpace) throws Exception {
+        return createAddressSpace(addressSpace, addressApiClient);
     }
 
-    protected void createAddressSpaceList(AddressSpace... addressSpaces) throws Exception {
+    protected List<AddressSpace> createAddressSpaceList(AddressSpace... addressSpaces) throws Exception {
         String operationID = TimeMeasuringSystem.startOperation(Operation.CREATE_ADDRESS_SPACE);
         List<AddressSpace> addrSpacesResponse = new ArrayList<>();
         ArrayList<AddressSpace> spaces = new ArrayList<>();
@@ -172,9 +172,10 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
             log.info(String.format("Address-space successfully created: %s", originalAddrSpace));
         });
         TimeMeasuringSystem.stopOperation(operationID);
+        return addrSpacesResponse;
     }
 
-    protected void createAddressSpace(AddressSpace addressSpace, AddressApiClient apiClient) throws Exception {
+    protected AddressSpace createAddressSpace(AddressSpace addressSpace, AddressApiClient apiClient) throws Exception {
         String operationID = TimeMeasuringSystem.startOperation(Operation.CREATE_ADDRESS_SPACE);
         AddressSpace addrSpaceResponse;
         if (!TestUtils.existAddressSpace(apiClient, addressSpace.getName())) {
@@ -195,6 +196,7 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
         }
         log.info("Address-space successfully created: '{}'", addressSpace);
         TimeMeasuringSystem.stopOperation(operationID);
+        return addrSpaceResponse;
     }
 
     //!TODO: protected void appendAddressSpace(...)
@@ -519,7 +521,7 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
         Endpoint messagingEndpoint = addressSpace.getEndpointByServiceName("messaging-" + addressSpace.getInfraUuid());
         if (messagingEndpoint == null) {
             String externalEndpointName = TestUtils.getExternalEndpointName(addressSpace, "messaging-" + addressSpace.getInfraUuid());
-            messagingEndpoint = kubernetes.getExternalEndpoint(addressSpace.getNamespace(), externalEndpointName);
+            messagingEndpoint = kubernetes.getExternalEndpoint(externalEndpointName);
         }
         if (TestUtils.resolvable(messagingEndpoint)) {
             return messagingEndpoint;
@@ -536,7 +538,7 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
         Endpoint consoleEndpoint = addressSpace.getEndpointByServiceName("console");
         if (consoleEndpoint == null) {
             String externalEndpointName = TestUtils.getExternalEndpointName(addressSpace, "console");
-            consoleEndpoint = kubernetes.getExternalEndpoint(addressSpace.getNamespace(), externalEndpointName);
+            consoleEndpoint = kubernetes.getExternalEndpoint(externalEndpointName);
         }
         String consoleRoute = String.format("https://%s", consoleEndpoint.toString());
         log.info(consoleRoute);

@@ -620,8 +620,8 @@ public abstract class Kubernetes {
      * @param resources
      * @return endpoint of service
      */
-    public Endpoint createServiceFromResource(Service resources) {
-        Service serRes = client.services().create(resources);
+    public Endpoint createServiceFromResource(String namespace, Service resources) {
+        Service serRes = client.services().inNamespace(namespace).create(resources);
         log.info("Service {} created", serRes.getMetadata().getName());
         return getEndpoint(serRes.getMetadata().getName(), "http");
     }

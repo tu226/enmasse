@@ -47,7 +47,7 @@ public abstract class TestBaseWithShared extends TestBase {
                 getAddressSpaceType(),
                 AuthService.STANDARD);
         log.info("Test is running in multitenant mode");
-        createSharedAddressSpace(sharedAddressSpace);
+        sharedAddressSpace = createSharedAddressSpace(sharedAddressSpace);
         if (environment.useDummyAddress() && !skipDummyAddress()) {
             if (!addressExists(dummyAddress)) {
                 log.info("'{}' address doesn't exist and will be created", dummyAddress);
@@ -91,8 +91,8 @@ public abstract class TestBaseWithShared extends TestBase {
         }
     }
 
-    private void createSharedAddressSpace(AddressSpace addressSpace) throws Exception {
-        super.createAddressSpace(addressSpace);
+    private AddressSpace createSharedAddressSpace(AddressSpace addressSpace) throws Exception {
+        return super.createAddressSpace(addressSpace);
     }
 
     protected void scale(Destination destination, int numReplicas) throws Exception {

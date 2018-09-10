@@ -821,11 +821,17 @@ public class TestUtils {
      * @param addressSpace AddressSpace that should be removed
      */
     public static void waitForAddressSpaceDeleted(Kubernetes kubernetes, AddressSpace addressSpace) throws Exception {
-        waitForNamespaceDeleted(kubernetes, addressSpace.getNamespace());
+        TimeoutBudget budget = new TimeoutBudget(5, TimeUnit.MINUTES);
+        while (budget.timeLeft() >= 0 && kubernetes.listPods(Collections.singletonMap("infraUuid", addressSpace.getInfraUuid())).size() > 0) {
+            Thread.sleep(1000);
+        }
+        if (kubernetes.listPods(Collections.singletonMap("infraUuid", addressSpace.getInfraUuid())).size() > 0) {
+            throw new TimeoutException("Timed out waiting for namespace " + addressSpace.getName() + " to disappear");
+        }
     }
 
     /**
-     * Wait until AddressSpace will be removed
+     * Wait until Namespace will be removed
      *
      * @param kubernetes client for manipulation with kubernetes cluster
      * @param namespace  project/namespace to remove

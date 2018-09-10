@@ -185,6 +185,7 @@ public class AddressSpace {
         StringBuilder addressSpaceString = new StringBuilder()
                 .append("{name=").append(name).append(",")
                 .append("namespace=").append(namespace).append(",")
+                .append("infraUuid=").append(infraUuid).append(",")
                 .append("type=").append(type.toString().toLowerCase()).append(",")
                 .append("plan=").append(plan);
         for (AddressSpaceEndpoint endpoint : endpoints) {
