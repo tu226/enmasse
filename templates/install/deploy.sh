@@ -262,6 +262,7 @@ else
 fi
 runcmd "$CMD label -n ${NAMESPACE} configmap address-space-controller-config app=enmasse"
 runcmd "$CMD create -n ${NAMESPACE} -f ${RESOURCE_DIR}/address-space-controller/address-space-definitions.yaml" "Create address space definitions"
+runcmd "$CMD create -n ${NAMESPACE} -f ${RESOURCE_DIR}/address-space-controller/broker-prometheus-config.yaml" "Create broker prometheus config"
 runcmd "$CMD create -n ${NAMESPACE} -f ${RESOURCE_DIR}/address-space-controller/standard-broker-definitions.yaml" "Create standard address space broker definitions"
 runcmd "$CMD create -n ${NAMESPACE} -f ${RESOURCE_DIR}/address-space-controller/deployment.yaml" "Create address space controller deployment"
 

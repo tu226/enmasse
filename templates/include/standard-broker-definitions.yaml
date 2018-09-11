@@ -150,7 +150,7 @@ data:
               secret:
                 secretName: broker-internal-cert.${INFRA_UUID}
             - configMap:
-                name: broker-prometheus-config.${INFRA_UUID}
+                name: broker-prometheus-config
               name: broker-prometheus-config
         volumeClaimTemplates:
         - apiVersion: v1
@@ -387,7 +387,7 @@ data:
               secret:
                 secretName: broker-internal-cert.${INFRA_UUID}
             - configMap:
-                name: broker-prometheus-config.${INFRA_UUID}
+                name: broker-prometheus-config
               name: broker-prometheus-config
         volumeClaimTemplates:
         - apiVersion: v1

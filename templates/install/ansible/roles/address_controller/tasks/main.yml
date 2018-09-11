@@ -5,6 +5,8 @@
   failed_when: config_exists.stderr != '' and 'already exists' not in config_exists.stderr
 - name: Create the address space definitions
   shell: oc apply -f {{ playbook_dir }}/resources/address-space-controller/address-space-definitions.yaml
+- name: Create the broker prometheus config
+  shell: oc apply -f {{ playbook_dir }}/resources/address-space-controller/broker-prometheus-config.yaml
 - name: Create the standard broker definitions
   shell: oc apply -f {{ playbook_dir }}/resources/address-space-controller/standard-broker-definitions.yaml
 - name: Create the address space controller deployment

@@ -56,19 +56,6 @@ data:
           capability: router
           infraUuid: ${INFRA_UUID}
     - apiVersion: v1
-      data:
-        config.yaml: '{"hostPort": "127.0.0.1:1099", "rules": [{"labels": {"address":
-          "$2", "broker": "$1"}, "name": "artemis_message_count", "pattern": "org.apache.activemq.artemis<broker=\"(.+)\",
-          component=addresses, address=\"(.+)\".*><>MessageCount", "type": "GAUGE"}],
-          "ssl": true}'
-      kind: ConfigMap
-      metadata:
-        labels:
-          app: enmasse
-          infraType: standard
-          infraUuid: ${INFRA_UUID}
-        name: broker-prometheus-config.${INFRA_UUID}
-    - apiVersion: v1
       kind: ConfigMap
       metadata:
         name: qdrouterd-config.${INFRA_UUID}
@@ -717,19 +704,6 @@ data:
           name: subserv
           infraType: standard
           infraUuid: ${INFRA_UUID}
-    - apiVersion: v1
-      data:
-        config.yaml: '{"hostPort": "127.0.0.1:1099", "rules": [{"labels": {"address":
-          "$2", "broker": "$1"}, "name": "artemis_message_count", "pattern": "org.apache.activemq.artemis<broker=\"(.+)\",
-          component=addresses, address=\"(.+)\".*><>MessageCount", "type": "GAUGE"}],
-          "ssl": true}'
-      kind: ConfigMap
-      metadata:
-        labels:
-          app: enmasse
-          infraType: standard
-          infraUuid: ${INFRA_UUID}
-        name: broker-prometheus-config.${INFRA_UUID}
     - apiVersion: v1
       kind: ConfigMap
       metadata:
@@ -1511,23 +1485,6 @@ data:
       metadata:
         name: authservice-ca.${INFRA_UUID}
     - apiVersion: v1
-      data:
-        config.yaml: '{"hostPort": "127.0.0.1:1099", "rules": [{"labels": {"broker":
-          "$1"}, "name": "artemis_connection_count", "pattern": "org.apache.activemq.artemis<broker=\"(.+)\"><>ConnectionCount",
-          "type": "GAUGE"}, {"labels": {"address": "$2", "broker": "$1"}, "name": "artemis_consumer_count",
-          "pattern": "org.apache.activemq.artemis<broker=\"(.+)\", component=addresses,
-          address=\"(.+)\".*><>ConsumerCount", "type": "GAUGE"}, {"labels": {"address":
-          "$2", "broker": "$1"}, "name": "artemis_message_count", "pattern": "org.apache.activemq.artemis<broker=\"(.+)\",
-          component=addresses, address=\"(.+)\".*><>MessageCount", "type": "GAUGE"}],
-          "ssl": true}'
-      kind: ConfigMap
-      metadata:
-        labels:
-          app: enmasse
-          infraType: brokered
-          infraUuid: ${INFRA_UUID}
-        name: broker-prometheus-config.${INFRA_UUID}
-    - apiVersion: v1
       kind: PersistentVolumeClaim
       metadata:
         annotations:
@@ -1644,7 +1601,7 @@ data:
                 claimName: broker-data.${INFRA_UUID}
             - name: broker-prometheus-config
               configMap:
-                name: broker-prometheus-config.${INFRA_UUID}
+                name: broker-prometheus-config
             - name: broker-internal-cert
               secret:
                 secretName: broker-internal-cert.${INFRA_UUID}
