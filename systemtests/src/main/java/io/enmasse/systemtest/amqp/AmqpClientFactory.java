@@ -73,7 +73,7 @@ public class AmqpClientFactory {
             Endpoint messagingEndpoint = addressSpace.getEndpointByServiceName("messaging");
             if (messagingEndpoint == null) {
                 String externalEndpointName = TestUtils.getExternalEndpointName(addressSpace, "messaging");
-                messagingEndpoint = kubernetes.getExternalEndpoint(externalEndpointName);
+                messagingEndpoint = kubernetes.getExternalEndpoint(externalEndpointName + "-" + addressSpace.getInfraUuid());
             }
             Endpoint clientEndpoint;
             ProtonClientOptions clientOptions = new ProtonClientOptions();
