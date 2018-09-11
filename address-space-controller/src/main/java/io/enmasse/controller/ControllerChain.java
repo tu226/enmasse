@@ -133,7 +133,7 @@ public class ControllerChain extends AbstractVerticle implements Watcher<Address
 
     private void retainAddressSpaces(Set<AddressSpace> desiredAddressSpaces) {
         String [] uuids = desiredAddressSpaces.stream()
-                .map(AddressSpace::getShortUid)
+                .map(a -> a.getAnnotation(AnnotationKeys.INFRA_UUID))
                 .toArray(String[]::new);
         kubernetes.deleteResourcesNotIn(uuids);
     }

@@ -65,13 +65,6 @@ public class AddressSpace {
         return uid;
     }
 
-    public String getShortUid() {
-        if (uid == null) {
-            return null;
-        }
-        return uid.substring(0, uid.indexOf('-'));
-    }
-
     public AddressSpaceStatus getStatus() {
         return status;
     }

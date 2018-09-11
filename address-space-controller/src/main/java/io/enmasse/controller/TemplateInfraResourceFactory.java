@@ -6,6 +6,7 @@ package io.enmasse.controller;
 
 import io.enmasse.address.model.*;
 import io.enmasse.api.common.SchemaProvider;
+import io.enmasse.config.AnnotationKeys;
 import io.enmasse.controller.common.AuthenticationServiceResolverFactory;
 import io.enmasse.controller.common.Kubernetes;
 import io.enmasse.controller.common.TemplateParameter;
@@ -43,12 +44,13 @@ public class TemplateInfraResourceFactory implements InfraResourceFactory {
             AuthenticationService authService = addressSpace.getAuthenticationService();
             AuthenticationServiceResolver authResolver = authResolverFactory.getResolver(authService.getType());
 
+            String infraUuid = addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID);
             parameters.put(TemplateParameter.ADDRESS_SPACE, addressSpace.getName());
-            parameters.put(TemplateParameter.INFRA_UUID, addressSpace.getShortUid());
+            parameters.put(TemplateParameter.INFRA_UUID, infraUuid);
             parameters.put(TemplateParameter.ADDRESS_SPACE_NAMESPACE, addressSpace.getNamespace());
             parameters.put(TemplateParameter.AUTHENTICATION_SERVICE_HOST, authResolver.getHost(authService));
             parameters.put(TemplateParameter.AUTHENTICATION_SERVICE_PORT, String.valueOf(authResolver.getPort(authService)));
-            parameters.put(TemplateParameter.ADDRESS_SPACE_ADMIN_SA, "sa-" + addressSpace.getShortUid());
+            parameters.put(TemplateParameter.ADDRESS_SPACE_ADMIN_SA, "sa-" + infraUuid);
             parameters.put(TemplateParameter.ADDRESS_SPACE_PLAN, addressSpace.getPlan());
 
             authResolver.getCaSecretName(authService).ifPresent(secretName -> kubernetes.getSecret(secretName).ifPresent(secret -> parameters.put(TemplateParameter.AUTHENTICATION_SERVICE_CA_CERT, secret.getData().get("tls.crt"))));

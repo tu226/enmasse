@@ -14,6 +14,7 @@ import io.enmasse.api.auth.RbacSecurityContext;
 import io.enmasse.api.auth.ResourceVerb;
 import io.enmasse.api.common.Exceptions;
 import io.enmasse.api.common.SchemaProvider;
+import io.enmasse.api.common.UuidGenerator;
 import io.enmasse.config.AnnotationKeys;
 import io.enmasse.config.LabelKeys;
 import io.enmasse.address.model.AddressSpace;
@@ -33,6 +34,7 @@ public abstract class OSBServiceBase {
     private final AuthApi authApi;
     private final SchemaProvider schemaProvider;
     private final String namespace;
+    private final UuidGenerator uuidGenerator = new UuidGenerator();
 
     public OSBServiceBase(AddressSpaceApi addressSpaceApi, AuthApi authApi, SchemaProvider schemaProvider) {
         this.addressSpaceApi = addressSpaceApi;
@@ -80,6 +82,7 @@ public abstract class OSBServiceBase {
                 .putLabel(LabelKeys.SERVICE_INSTANCE_ID, instanceId)
                 .build();
         addressSpace = setDefaults(addressSpace, namespace);
+        addressSpace.putAnnotation(AnnotationKeys.INFRA_UUID, uuidGenerator.generateInfraUuid());
         addressSpaceApi.createAddressSpace(addressSpace);
         log.info("Created MaaS addressspace {}", addressSpace.getName());
         return addressSpace;

@@ -92,7 +92,7 @@ public class CreateController implements Controller {
         Schema schema = schemaProvider.getSchema();
         AddressSpaceResolver addressSpaceResolver = new AddressSpaceResolver(schema);
         addressSpaceResolver.validate(addressSpace);
-        String uuid = addressSpace.getShortUid();
+        String uuid = addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID);
 
         if (kubernetes.hasService(uuid, "messaging")) {
             return addressSpace;
@@ -101,9 +101,9 @@ public class CreateController implements Controller {
         List<EndpointSpec> endpoints = validateEndpoints(addressSpaceResolver, addressSpace);
         endpoints = replaceServiceNames(uuid, endpoints);
         Map<String, String> labels = new HashMap<>();
-        labels.put(LabelKeys.INFRA_UUID, addressSpace.getShortUid());
+        labels.put(LabelKeys.INFRA_UUID, addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID));
         labels.put(LabelKeys.INFRA_TYPE, addressSpace.getType());
-        kubernetes.createServiceAccount("sa-" + addressSpace.getShortUid(), labels);
+        kubernetes.createServiceAccount("sa-" + addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID), labels);
 
         log.info("Creating address space {}", addressSpace);
 

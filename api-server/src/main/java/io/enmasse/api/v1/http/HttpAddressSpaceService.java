@@ -12,6 +12,7 @@ import io.enmasse.api.auth.RbacSecurityContext;
 import io.enmasse.api.auth.ResourceVerb;
 import io.enmasse.api.common.Exceptions;
 import io.enmasse.api.common.SchemaProvider;
+import io.enmasse.api.common.UuidGenerator;
 import io.enmasse.api.v1.AddressApiHelper;
 import io.enmasse.config.AnnotationKeys;
 import io.enmasse.config.LabelKeys;
@@ -34,6 +35,7 @@ public class HttpAddressSpaceService {
     private final SchemaProvider schemaProvider;
 
     private final AddressSpaceApi addressSpaceApi;
+    private final UuidGenerator uuidGenerator = new UuidGenerator();
 
     public HttpAddressSpaceService(AddressSpaceApi addressSpaceApi, SchemaProvider schemaProvider) {
         this.addressSpaceApi = addressSpaceApi;
@@ -118,6 +120,8 @@ public class HttpAddressSpaceService {
         if (addressSpace.getLabel(LabelKeys.NAMESPACE) == null) {
             addressSpace.putLabel(LabelKeys.NAMESPACE, addressSpace.getNamespace());
         }
+
+        addressSpace.putAnnotation(AnnotationKeys.INFRA_UUID, uuidGenerator.generateInfraUuid());
 
         if (securityContext.isSecure() && securityContext.getUserPrincipal() != null) {
             String createdBy = RbacSecurityContext.getUserName(securityContext.getUserPrincipal());

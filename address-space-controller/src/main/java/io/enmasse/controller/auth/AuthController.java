@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import io.enmasse.address.model.*;
+import io.enmasse.config.AnnotationKeys;
 import io.enmasse.config.LabelKeys;
 import io.enmasse.controller.CertProviderFactory;
 import io.enmasse.controller.Controller;
@@ -90,8 +91,9 @@ public class AuthController implements Controller {
             final String addressSpaceCaSecretName = KubeUtil.getAddressSpaceCaSecretName(addressSpace);
             Secret secret = certManager.getCertSecret(addressSpaceCaSecretName);
             if (secret == null) {
+                String infraUuid = addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID);
                 Map<String, String> labels = new HashMap<>();
-                labels.put(LabelKeys.INFRA_UUID, addressSpace.getShortUid());
+                labels.put(LabelKeys.INFRA_UUID, infraUuid);
                 labels.put(LabelKeys.INFRA_TYPE, addressSpace.getType());
                 secret = certManager.createSelfSignedCertSecret(addressSpaceCaSecretName, labels);
                 //put crt into address space
@@ -108,9 +110,10 @@ public class AuthController implements Controller {
     public void issueComponentCertificates(AddressSpace addressSpace, Secret addressSpaceCaSecret) {
         try {
             Map<String, String> labels = new HashMap<>();
-            labels.put(LabelKeys.INFRA_UUID, addressSpace.getShortUid());
+            String infraUuid = addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID);
+            labels.put(LabelKeys.INFRA_UUID, infraUuid);
             labels.put(LabelKeys.INFRA_TYPE, addressSpace.getType());
-            List<Cert> certs = certManager.listComponents(addressSpace.getShortUid()).stream()
+            List<Cert> certs = certManager.listComponents(infraUuid).stream()
                     .filter(component -> !certManager.certExists(component))
                     .map(certManager::createCsr)
                     .map(request -> certManager.signCsr(request, addressSpaceCaSecret, Collections.emptySet()))

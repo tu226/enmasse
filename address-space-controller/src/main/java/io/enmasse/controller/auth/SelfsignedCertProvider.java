@@ -50,9 +50,10 @@ public class SelfsignedCertProvider implements CertProvider {
         if (secret == null) {
             log.info("Creating self-signed certificates for {}", cn);
 
+            String infraUuid = addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID);
             Map<String, String> labels = new HashMap<>();
             labels.put(LabelKeys.INFRA_TYPE, addressSpace.getType());
-            labels.put(LabelKeys.INFRA_UUID, addressSpace.getShortUid());
+            labels.put(LabelKeys.INFRA_UUID, infraUuid);
             if (cn != null) {
                 Secret ca = issueAddressSpaceCert(addressSpace, labels);
                 CertComponent component = new CertComponent(cn, namespace, certSpec.getSecretName());

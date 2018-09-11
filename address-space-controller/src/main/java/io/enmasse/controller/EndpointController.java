@@ -48,7 +48,8 @@ public class EndpointController implements Controller {
         Map<String, String> annotations = new HashMap<>();
         annotations.put(AnnotationKeys.ADDRESS_SPACE, addressSpace.getName());
 
-        List<Service> services = client.services().inNamespace(namespace).withLabel(LabelKeys.INFRA_UUID, addressSpace.getShortUid()).list().getItems();
+        String infraUuid = addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID);
+        List<Service> services = client.services().inNamespace(namespace).withLabel(LabelKeys.INFRA_UUID, infraUuid).list().getItems();
         List<EndpointInfo> endpoints = collectEndpoints(addressSpace, services);
 
         /* Watch for routes and lb services */
@@ -144,19 +145,20 @@ public class EndpointController implements Controller {
 
     private Route ensureRouteExists(AddressSpace addressSpace, EndpointSpec endpointSpec) {
         OpenShiftClient openShiftClient = client.adapt(OpenShiftClient.class);
-        Route existingRoute = openShiftClient.routes().inNamespace(namespace).withName(endpointSpec.getName() + "-" + addressSpace.getShortUid()).get();
+        String infraUuid = addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID);
+        Route existingRoute = openShiftClient.routes().inNamespace(namespace).withName(endpointSpec.getName() + "-" + infraUuid).get();
         if (existingRoute != null) {
             return existingRoute;
         }
 
         RouteBuilder route = new RouteBuilder()
                 .editOrNewMetadata()
-                .withName(endpointSpec.getName() + "-" + addressSpace.getShortUid())
+                .withName(endpointSpec.getName() + "-" + infraUuid)
                 .withNamespace(namespace)
                 .addToAnnotations(AnnotationKeys.ADDRESS_SPACE, addressSpace.getName())
                 .addToAnnotations(AnnotationKeys.SERVICE_NAME, endpointSpec.getService())
                 .addToLabels(LabelKeys.INFRA_TYPE, addressSpace.getType())
-                .addToLabels(LabelKeys.INFRA_UUID, addressSpace.getShortUid())
+                .addToLabels(LabelKeys.INFRA_UUID, infraUuid)
                 .endMetadata()
                 .editOrNewSpec()
                 .withHost(endpointSpec.getHost().orElse(""))
@@ -183,7 +185,8 @@ public class EndpointController implements Controller {
     }
 
     private Service ensureExternalServiceExists(AddressSpace addressSpace, EndpointSpec endpointSpec) {
-        String serviceName = endpointSpec.getName() + "-" + addressSpace.getShortUid() + "-external";
+        String infraUuid = addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID);
+        String serviceName = endpointSpec.getName() + "-" + infraUuid + "-external";
 
         Service existingService = client.services().inNamespace(namespace).withName(serviceName).get();
         if (existingService != null) {
@@ -214,7 +217,7 @@ public class EndpointController implements Controller {
                 .addToAnnotations(AnnotationKeys.ADDRESS_SPACE, addressSpace.getName())
                 .addToAnnotations(AnnotationKeys.SERVICE_NAME, endpointSpec.getService())
                 .addToLabels(LabelKeys.INFRA_TYPE, addressSpace.getType())
-                .addToLabels(LabelKeys.INFRA_UUID, addressSpace.getShortUid())
+                .addToLabels(LabelKeys.INFRA_UUID, infraUuid)
                 .endMetadata()
                 .editOrNewSpec()
                 .withPorts(servicePort)

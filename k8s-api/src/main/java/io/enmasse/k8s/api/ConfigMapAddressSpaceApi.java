@@ -149,10 +149,6 @@ public class ConfigMapAddressSpaceApi implements AddressSpaceApi, ListerWatcher<
                 builder.setSelfLink("/apis/enmasse.io/v1alpha1/namespaces/" + addressSpace.getNamespace() + "/addressspaces/" + addressSpace.getName());
             }
 
-            if (addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID) == null) {
-                addressSpace.putAnnotation(AnnotationKeys.INFRA_UUID, addressSpace.getShortUid());
-            }
-
             return builder.build();
         } catch (Exception e) {
             log.error("Error decoding address space", e);
@@ -185,7 +181,7 @@ public class ConfigMapAddressSpaceApi implements AddressSpaceApi, ListerWatcher<
 
     @Override
     public AddressApi withAddressSpace(AddressSpace addressSpace) {
-        return new ConfigMapAddressApi(client, client.getNamespace(), addressSpace.getShortUid());
+        return new ConfigMapAddressApi(client, client.getNamespace(), addressSpace.getAnnotation(AnnotationKeys.INFRA_UUID));
     }
 
     private ConfigMapList list(String namespace) {
