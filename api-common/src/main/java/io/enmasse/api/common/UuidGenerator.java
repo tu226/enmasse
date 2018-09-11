@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class UuidGenerator {
     private final Random random = new SecureRandom();
-    private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final String ALPHA_NUMERIC_STRING = "abcdefghijklmnopqrstuvwxyz0123456789";
 
     public String generateInfraUuid() {
         return generateAlphaNumberic(10);
