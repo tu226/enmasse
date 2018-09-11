@@ -91,7 +91,7 @@ public class AddressSpace {
 
     public Endpoint getEndpointByName(String endpoint) {
         for (AddressSpaceEndpoint addrSpaceEndpoint : endpoints) {
-            if (addrSpaceEndpoint.getName().equals(endpoint)) {
+            if (addrSpaceEndpoint.getName().equals(String.format("%s-%s", endpoint, infraUuid))) {
                 if (addrSpaceEndpoint.getHost() == null) {
                     return null;
                 } else {
@@ -105,7 +105,7 @@ public class AddressSpace {
 
     public Endpoint getEndpointByServiceName(String endpointService) {
         for (AddressSpaceEndpoint addrSpaceEndpoint : endpoints) {
-            if (addrSpaceEndpoint.getService().equals(endpointService)) {
+            if (addrSpaceEndpoint.getService().equals(String.format("%s-%s", endpointService, infraUuid))) {
                 if (addrSpaceEndpoint.getHost() == null) {
                     return null;
                 } else {

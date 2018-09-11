@@ -36,7 +36,7 @@ public abstract class ClusterClientTestBase extends TestBaseWithShared {
     @BeforeEach
     public void setUpClientBase() throws Exception {
         if (cliApiClient == null) {
-            Endpoint cliEndpoint = TestUtils.deployMessagingClientApp(sharedAddressSpace.getName(), kubernetes);
+            Endpoint cliEndpoint = TestUtils.deployMessagingClientApp(environment.namespace(), kubernetes);
             cliApiClient = new MsgCliApiClient(kubernetes, cliEndpoint);
         }
 
