@@ -3,7 +3,6 @@ localhost ansible_connection=local
 
 [enmasse:vars]
 namespace=enmasse
-multitenant=true
 enable_rbac=false
 api_server=true
 service_catalog=true

@@ -7,9 +7,6 @@ include::common/attributes.adoc[]
 [id='deploying-single-namespace-{context}']
 = (Optional) Deploying {ProductName} to a single namespace
 
-Although {ProductName} is designed to manage multiple namespaces, there are cases where deploying to a
-single namespace is useful when evaluating {ProductName} without the required privileges.
-
 .Prerequisite
 
 * At least one authentication service must be installed. For more information see * xref:deploying-auth-services-{context}[].
@@ -21,16 +18,13 @@ single namespace is useful when evaluating {ProductName} without the required pr
 [options="nowrap"]
 ----
 oc create sa enmasse-admin
-oc create sa address-space-admin
 ----
 
 . Grant privileges required for viewing and managing resources:
 +
 [options="nowrap"]
 ----
-oc policy add-role-to-user view system:serviceaccount:enmasse:default
 oc policy add-role-to-user admin system:serviceaccount:enmasse:enmasse-admin
-oc policy add-role-to-user admin system:serviceaccount:enmasse:address-space-admin
 ----
 
 . Install the default plan and resource configuration:
@@ -39,13 +33,14 @@ oc policy add-role-to-user admin system:serviceaccount:enmasse:address-space-adm
 ----
 oc create -f ./resources/resource-definitions/resource-definitions.yaml
 oc create -f ./resources/plans/standard-plans.yaml
+oc create -f ./resources/plans/brokered-plans.yaml
 ----
 
 . Deploy the default address space:
 +
 [options="nowrap"]
 ----
-oc process -f ./resources/templates/address-space.yaml NAME=default NAMESPACE=enmasse TYPE=standard PLAN=unlimited-standard | oc create -f -
+oc process -f ./resources/templates/address-space.yaml NAME=myspace INFRA_UUID=abcd TYPE=standard PLAN=unlimited-standard | oc create -f -
 ----
 
 . Deploy the template for creating addresses:
@@ -62,6 +57,7 @@ You can use this template later for creating addresses from the command line.
 [options="nowrap"]
 ----
 oc create -f ./resources/address-space-controller/address-space-definitions.yaml
+oc create -f ./resources/address-space-controller/broker-prometheus-config.yaml
 oc create -f ./resources/address-space-controller/deployment.yaml
 ----
 +
@@ -74,3 +70,9 @@ The deployments required for running {ProductName} are now created.
 oc get pods -n enmasse
 ----
 
+. Create an address:
++
+[options="nowrap"]
+----
+oc process address ADDRESS_SPACE=myspace ADDRESS=queue1 INFRA_UUID=abcd | oc create -f -
+----
