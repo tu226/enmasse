@@ -518,7 +518,7 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
     }
 
     protected Endpoint getMessagingRoute(AddressSpace addressSpace) {
-        Endpoint messagingEndpoint = addressSpace.getEndpointByServiceName("messaging-" + addressSpace.getInfraUuid());
+        Endpoint messagingEndpoint = addressSpace.getEndpointByServiceName("messaging");
         if (messagingEndpoint == null) {
             String externalEndpointName = TestUtils.getExternalEndpointName(addressSpace, "messaging-" + addressSpace.getInfraUuid());
             messagingEndpoint = kubernetes.getExternalEndpoint(externalEndpointName);

@@ -53,11 +53,11 @@ public abstract class ClientTestBase extends TestBaseWithShared {
 
     private Endpoint getMessagingRoute(AddressSpace addressSpace, boolean websocket) {
         if (addressSpace.getType().equals(AddressSpaceType.STANDARD) && websocket) {
-            Endpoint messagingEndpoint = addressSpace.getEndpointByName("amqp-wss");
+            Endpoint messagingEndpoint = addressSpace.getEndpointByName("amqp-wss-" + addressSpace.getInfraUuid());
             if (TestUtils.resolvable(messagingEndpoint)) {
                 return messagingEndpoint;
             } else {
-                return kubernetes.getEndpoint("messaging", "https");
+                return kubernetes.getEndpoint("messaging-" + addressSpace.getInfraUuid(), "https");
             }
         } else {
             return getMessagingRoute(addressSpace);

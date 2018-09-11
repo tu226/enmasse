@@ -52,8 +52,8 @@ public abstract class ClusterClientTestBase extends TestBaseWithShared {
     }
 
     private Endpoint getMessagingRoute(AddressSpace addressSpace, boolean websocket) {
-        return new Endpoint(String.format("messaging.%s.svc",
-                addressSpace.getNamespace()), websocket && addressSpace.getType().equals(AddressSpaceType.STANDARD) ? 443 : 5671);
+        return new Endpoint(String.format("messaging-%s.%s.svc",
+                addressSpace.getInfraUuid(), environment.namespace()), websocket && addressSpace.getType().equals(AddressSpaceType.STANDARD) ? 443 : 5671);
     }
 
     protected void doBasicMessageTest(AbstractClient sender, AbstractClient receiver) throws Exception {
