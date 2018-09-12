@@ -25,7 +25,7 @@ data:
           app: enmasse
           infraType: standard
           infraUuid: ${INFRA_UUID}
-        name: messaging
+        name: messaging-${INFRA_UUID}
       spec:
         ports:
         - name: amqp
@@ -294,13 +294,13 @@ data:
                 secretName: ${MESSAGING_SECRET}
             - name: authservice-ca
               secret:
-                secretName: authservice-ca
+                secretName: authservice-ca.${INFRA_UUID}
             - name: router-internal-cert
               secret:
                 secretName: router-internal-cert.${INFRA_UUID}
             - name: qdrouterd-config
               configMap:
-                name: qdrouterd-config
+                name: qdrouterd-config.${INFRA_UUID}
     - apiVersion: v1
       data:
         tls.crt: ${AUTHENTICATION_SERVICE_CA_CERT}
@@ -485,7 +485,7 @@ data:
                 secretName: ${CONSOLE_SECRET}
             - name: authservice-ca
               secret:
-                secretName: authservice-ca
+                secretName: authservice-ca.${INFRA_UUID}
             - name: admin-internal-cert
               secret:
                 secretName: admin-internal-cert.${INFRA_UUID}
@@ -549,7 +549,6 @@ data:
           targetPort: 55671
         selector:
           name: admin
-          infraType: standard
           infraUuid: ${INFRA_UUID}
     - apiVersion: v1
       kind: Service
@@ -568,7 +567,6 @@ data:
           targetPort: 8080
         selector:
           name: admin
-          infraType: standard
           infraUuid: ${INFRA_UUID}
     parameters:
     - name: INFRA_UUID
@@ -637,8 +635,6 @@ data:
     metadata:
       labels:
         app: enmasse
-        infraType: standard
-        infraUuid: ${INFRA_UUID}
       name: standard-space-infra
     objects:
     - apiVersion: v1
@@ -682,7 +678,6 @@ data:
           targetPort: 55672
         selector:
           capability: router
-          infraType: standard
           infraUuid: ${INFRA_UUID}
     - apiVersion: v1
       kind: Service
@@ -702,7 +697,6 @@ data:
           targetPort: 5672
         selector:
           name: subserv
-          infraType: standard
           infraUuid: ${INFRA_UUID}
     - apiVersion: v1
       kind: ConfigMap
@@ -1162,7 +1156,6 @@ data:
           targetPort: 55672
         selector:
           capability: router
-          infraType: standard
           infraUuid: ${INFRA_UUID}
     - apiVersion: v1
       kind: Service
@@ -1181,7 +1174,6 @@ data:
           targetPort: 55671
         selector:
           name: admin
-          infraType: standard
           infraUuid: ${INFRA_UUID}
     - apiVersion: v1
       kind: Service
@@ -1200,7 +1192,6 @@ data:
           targetPort: 55671
         selector:
           name: admin
-          infraType: standard
           infraUuid: ${INFRA_UUID}
     - apiVersion: v1
       kind: Service
@@ -1219,7 +1210,6 @@ data:
           targetPort: 8080
         selector:
           name: admin
-          infraType: standard
           infraUuid: ${INFRA_UUID}
     - apiVersion: extensions/v1beta1
       kind: Deployment
@@ -1303,7 +1293,6 @@ data:
           targetPort: 8883
         selector:
           name: mqtt-gateway
-          infraType: standard
           infraUuid: ${INFRA_UUID}
         type: ClusterIP
     - apiVersion: extensions/v1beta1
@@ -1431,7 +1420,7 @@ data:
       required: true
     - description: The link capacity setting for router
       name: ROUTER_LINK_CAPACITY
-      value: '50'
+      value: '250'
     - description: The hostname to use for the exposed route for messaging
       name: MESSAGING_HOSTNAME
     - description: The hostname to use for the exposed route for MQTT
