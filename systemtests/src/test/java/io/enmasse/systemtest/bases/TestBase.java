@@ -156,7 +156,8 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
             }
         }
         addressApiClient.createAddressSpaceList(spaces.toArray(new AddressSpace[0]));
-        for (AddressSpace addressSpace : spaces) {
+        List<AddressSpace> results = TestUtils.getAddressSpacesObjects(addressApiClient);
+        for (AddressSpace addressSpace : results) {
             logCollector.startCollecting(addressSpace);
             addrSpacesResponse.add(TestUtils.waitForAddressSpaceReady(addressApiClient, addressSpace.getName()));
             if (!addressSpace.equals(getSharedAddressSpace())) {
@@ -164,6 +165,8 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
             }
         }
         Arrays.stream(addressSpaces).forEach(originalAddrSpace -> {
+            originalAddrSpace.setInfraUuid(addrSpacesResponse.stream().filter(
+                    resposeAddrSpace -> resposeAddrSpace.getName().equals(originalAddrSpace.getName())).findFirst().get().getInfraUuid());
             if (originalAddrSpace.getEndpoints().isEmpty()) {
                 originalAddrSpace.setEndpoints(addrSpacesResponse.stream().filter(
                         resposeAddrSpace -> resposeAddrSpace.getName().equals(originalAddrSpace.getName())).findFirst().get().getEndpoints());
