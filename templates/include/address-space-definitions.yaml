@@ -1251,6 +1251,8 @@ data:
                 value: messaging-${INFRA_UUID}
               - name: MESSAGING_SERVICE_PORT_AMQPS_NORMAL
                 value: 55671
+              - name: MESSAGING_SERVICE_PORT_AMQPS_BROKER
+                value: 56671
               command:
               - /opt/app-root/src/bin/launch_node.sh
               - /opt/app-root/src/bin/subserv.js
