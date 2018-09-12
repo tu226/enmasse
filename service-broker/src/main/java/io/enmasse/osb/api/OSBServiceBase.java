@@ -82,13 +82,12 @@ public abstract class OSBServiceBase {
                 .putLabel(LabelKeys.SERVICE_INSTANCE_ID, instanceId)
                 .build();
         addressSpace = setDefaults(addressSpace, namespace);
-        addressSpace.putAnnotation(AnnotationKeys.INFRA_UUID, uuidGenerator.generateInfraUuid());
         addressSpaceApi.createAddressSpace(addressSpace);
         log.info("Created MaaS addressspace {}", addressSpace.getName());
         return addressSpace;
     }
 
-    private static AddressSpace setDefaults(AddressSpace addressSpace, String namespace) {
+    private AddressSpace setDefaults(AddressSpace addressSpace, String namespace) {
         if (addressSpace.getNamespace() == null) {
             addressSpace = new AddressSpace.Builder(addressSpace)
                     .setNamespace(namespace)
@@ -106,6 +105,8 @@ public abstract class OSBServiceBase {
         if (addressSpace.getLabel(LabelKeys.NAMESPACE) == null) {
             addressSpace.putLabel(LabelKeys.NAMESPACE, addressSpace.getNamespace());
         }
+
+        addressSpace.putAnnotation(AnnotationKeys.INFRA_UUID, uuidGenerator.generateInfraUuid());
         return addressSpace;
     }
 
