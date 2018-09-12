@@ -125,6 +125,10 @@ public abstract class Kubernetes {
         return new ArrayList<>(client.pods().inNamespace(globalNamespace).withLabel("enmasse.io/uuid", uuid).list().getItems());
     }
 
+    public List<Pod> listPods() {
+        return new ArrayList<>(client.pods().inNamespace(globalNamespace).list().getItems());
+    }
+
     public List<Pod> listPods(Map<String, String> labelSelector) {
         return client.pods().withLabels(labelSelector).list().getItems();
     }

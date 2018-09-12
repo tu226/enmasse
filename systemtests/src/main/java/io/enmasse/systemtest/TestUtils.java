@@ -209,7 +209,7 @@ public class TestUtils {
      * @return
      */
     public static List<Pod> listRunningPods(Kubernetes kubernetes, AddressSpace addressSpace) {
-        return kubernetes.listPods(addressSpace.getNamespace()).stream()
+        return kubernetes.listPods(Collections.singletonMap("infraUuid", addressSpace.getInfraUuid())).stream()
                 .filter(pod -> pod.getStatus().getPhase().equals("Running")
                         && !pod.getMetadata().getName().startsWith(SystemtestsOpenshiftApp.MESSAGING_CLIENTS.toString()))
                 .collect(Collectors.toList());
