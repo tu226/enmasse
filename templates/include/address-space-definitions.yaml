@@ -1246,7 +1246,12 @@ data:
               infraUuid: ${INFRA_UUID}
           spec:
             containers:
-            - command:
+            - env:
+              - name: MESSAGING_SERVICE_HOST
+                value: messaging-${INFRA_UUID}
+              - name: MESSAGING_SERVICE_PORT_AMQPS_NORMAL
+                value: 55671
+              command:
               - /opt/app-root/src/bin/launch_node.sh
               - /opt/app-root/src/bin/subserv.js
               image: ${AGENT_IMAGE}
