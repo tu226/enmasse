@@ -18,6 +18,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.slf4j.Logger;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -36,6 +37,8 @@ import java.util.Set;
 import java.util.UUID;
 
 public class MqttClientFactory {
+
+    private static final Logger log = CustomLogger.getLogger();
 
     private final String SERVER_URI_TEMPLATE = "tcp://%s:%s";
     private final String TLS_SERVER_URI_TEMPLATE = "ssl://%s:%s";
@@ -124,6 +127,8 @@ public class MqttClientFactory {
             if (!TestUtils.resolvable(mqttEndpoint)) {
                 mqttEndpoint = new Endpoint("localhost", 443);
             }
+
+            log.info("Using mqtt endpoint {}", mqttEndpoint);
 
         } else {
             mqttEndpoint = this.kubernetes.getEndpoint("mqtt", "mqtt");
