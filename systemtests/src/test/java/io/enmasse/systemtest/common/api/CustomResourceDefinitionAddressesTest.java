@@ -41,7 +41,7 @@ public class CustomResourceDefinitionAddressesTest extends TestBase implements I
     void setUpSelenium() throws Exception {
         if (brokered == null) {
             brokered = new AddressSpace("crd-address-test-shared", AddressSpaceType.BROKERED, AuthService.NONE);
-            createAddressSpace(brokered);
+            brokered = createAddressSpace(brokered);
         }
         if (selenium.getDriver() == null) {
             selenium.setupDriver(environment, kubernetes, TestUtils.getChromeDriver());
