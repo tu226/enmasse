@@ -32,6 +32,8 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.net.NetClientOptions;
 import io.vertx.core.net.SocketAddress;
 import io.vertx.mqtt.MqttEndpoint;
 import io.vertx.mqtt.MqttWill;
@@ -49,6 +51,8 @@ import org.apache.qpid.proton.amqp.messaging.Accepted;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -128,6 +132,17 @@ public class AmqpBridge {
         // TODO: check correlation between MQTT and AMQP keep alive
         ProtonClientOptions clientOptions = new ProtonClientOptions();
         clientOptions.setHeartbeat(this.mqttEndpoint.keepAliveTimeSeconds() * 1000);
+
+
+
+        // TODO: Ugh, fix Vertx dns resolving issues
+        try {
+            InetAddress inetAddress = InetAddress.getByName(address);
+            LOG.info("Resolved to {}", inetAddress.getHostAddress());
+            address = inetAddress.getHostAddress();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         String userName = (this.mqttEndpoint.auth() != null) ? this.mqttEndpoint.auth().userName() : null;
         String password = (this.mqttEndpoint.auth() != null) ? this.mqttEndpoint.auth().password() : null;
