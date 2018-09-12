@@ -1324,6 +1324,10 @@ data:
           spec:
             containers:
             - env:
+              - name: MESSAGING_SERVICE_HOST
+                value: messaging-${INFRA_UUID}
+              - name: MESSAGING_SERVICE_PORT
+                value: 5672
               - name: ENMASSE_MQTT_SSL
                 value: 'true'
               - name: ENMASSE_MQTT_KEYFILE
@@ -1349,6 +1353,11 @@ data:
                 name: ssl-certs
                 readOnly: true
             - image: ${MQTT_GATEWAY_IMAGE}
+              env:
+              - name: MESSAGING_SERVICE_HOST
+                value: messaging-${INFRA_UUID}
+              - name: MESSAGING_SERVICE_PORT
+                value: 5672
               livenessProbe:
                 initialDelaySeconds: 60
                 tcpSocket:
