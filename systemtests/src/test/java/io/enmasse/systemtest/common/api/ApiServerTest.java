@@ -100,15 +100,15 @@ class ApiServerTest extends TestBase {
                 new AddressSpaceEndpoint(endpointPrefix + "messaging", "messaging", "amqps"),
                 new AddressSpaceEndpoint(endpointPrefix + "console", "console", "https"),
                 new AddressSpaceEndpoint(endpointPrefix + "mqtt", "mqtt", "secure-mqtt")));
-        createAddressSpace(addressSpace);
+        addressSpace = createAddressSpace(addressSpace);
 
         UserCredentials luckyUser = new UserCredentials("lucky", "luckyPswd");
         createUser(addressSpace, luckyUser);
 
         //try to get all external endpoints
-        kubernetes.getExternalEndpoint(endpointPrefix + "messaging");
-        kubernetes.getExternalEndpoint(endpointPrefix + "console");
-        kubernetes.getExternalEndpoint(endpointPrefix + "mqtt");
+        kubernetes.getExternalEndpoint(endpointPrefix + "messaging-" + addressSpace.getInfraUuid());
+        kubernetes.getExternalEndpoint(endpointPrefix + "console-" + addressSpace.getInfraUuid());
+        kubernetes.getExternalEndpoint(endpointPrefix + "mqtt-" + addressSpace.getInfraUuid());
 
         //messsaging
         Destination anycast = Destination.anycast("test-routes-anycast");
