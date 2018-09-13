@@ -196,9 +196,9 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
             addressSpace.setEndpoints(addrSpaceResponse.getEndpoints());
             log.info("Address-space '{}' endpoints successfully set.", addressSpace.getName());
         }
+        addressSpace.setInfraUuid(addrSpaceResponse.getInfraUuid());
         log.info("Address-space successfully created: '{}'", addressSpace);
         TimeMeasuringSystem.stopOperation(operationID);
-        addressSpace.setInfraUuid(addrSpaceResponse.getInfraUuid());
     }
 
     //!TODO: protected void appendAddressSpace(...)
