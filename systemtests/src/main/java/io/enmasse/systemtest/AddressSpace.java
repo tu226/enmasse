@@ -113,8 +113,8 @@ public class AddressSpace {
                 }
             }
         }
-        throw new IllegalStateException(String.format("Endpoint wih service name '%s' doesn't exist in address space '%s'",
-                endpointService, name));
+        throw new IllegalStateException(String.format("Endpoint with service name '%s-%s' doesn't exist in address space '%s'",
+                endpointService, infraUuid, name));
     }
 
     public List<AddressSpaceEndpoint> getEndpoints() {
