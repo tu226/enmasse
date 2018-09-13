@@ -4,8 +4,6 @@
 - import_role:
     name: plans_brokered
 - import_role:
-    name: address_controller_singletenant
-- import_role:
     name: none_authservice
   when: '"none" in authentication_services'
 - import_role:
