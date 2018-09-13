@@ -43,10 +43,10 @@ data:
           app: enmasse
           infraType: standard
           infraUuid: ${INFRA_UUID}
-        name: ${NAME}-${INFRA_UUID}
+        name: ${NAME}
       spec:
         replicas: 1
-        serviceName: ${NAME}-${INFRA_UUID}
+        serviceName: ${NAME}
         template:
           metadata:
             annotations:
@@ -231,7 +231,7 @@ data:
           app: enmasse
           infraType: standard
           infraUuid: ${INFRA_UUID}
-        name: ${NAME}-${INFRA_UUID}
+        name: ${NAME}
       spec:
         clusterIP: None
         selector:
@@ -252,10 +252,10 @@ data:
           app: enmasse
           infraType: standard
           infraUuid: ${INFRA_UUID}
-        name: ${NAME}-${INFRA_UUID}
+        name: ${NAME}
       spec:
         replicas: 1
-        serviceName: ${NAME}-${INFRA_UUID}
+        serviceName: ${NAME}
         template:
           metadata:
             annotations:

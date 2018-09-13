@@ -383,7 +383,7 @@ public class AddressProvisioner {
                 ResourceDefinition pooledDefinition = addressResolver.getResourceDefinition(resourceName);
                 int needPooled = sumNeededMatching(entry.getValue(), pooledPattern);
                 if (needPooled > 0) {
-                    provisionBroker(existingClusters, "broker", pooledDefinition, needPooled, null);
+                    provisionBroker(existingClusters, "broker-" + infraUuid, pooledDefinition, needPooled, null);
                 }
 
                 // Collect all sharded brokers
