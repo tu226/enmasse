@@ -6,11 +6,13 @@ package io.enmasse.systemtest;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddressSpace {
+    private static Logger log = CustomLogger.getLogger();
     private String name;
     private String namespace;
     private String plan;
@@ -91,7 +93,9 @@ public class AddressSpace {
 
     public Endpoint getEndpointByName(String endpoint) {
         for (AddressSpaceEndpoint addrSpaceEndpoint : endpoints) {
-            if (addrSpaceEndpoint.getName().equals(String.format("%s-%s", endpoint, infraUuid))) {
+            log.info("Got endpoint: name: {}, service-name: {}, host: {}, port: {}",
+                    addrSpaceEndpoint.getName(), addrSpaceEndpoint.getService(), addrSpaceEndpoint.getHost(), addrSpaceEndpoint.getPort());
+            if (addrSpaceEndpoint.getName().equals(endpoint)) {
                 if (addrSpaceEndpoint.getHost() == null) {
                     return null;
                 } else {
@@ -99,12 +103,14 @@ public class AddressSpace {
                 }
             }
         }
-        throw new IllegalStateException(String.format("Endpoint wih name '%s' doesn't exist in address space '%s'",
-                endpoint, name));
+        throw new IllegalStateException(String.format("Endpoint wih name '%s-%s' doesn't exist in address space '%s'",
+                endpoint, infraUuid, name));
     }
 
     public Endpoint getEndpointByServiceName(String endpointService) {
         for (AddressSpaceEndpoint addrSpaceEndpoint : endpoints) {
+            log.info("Got endpoint: name: {}, service-name: {}, host: {}, port: {}",
+                    addrSpaceEndpoint.getName(), addrSpaceEndpoint.getService(), addrSpaceEndpoint.getHost(), addrSpaceEndpoint.getPort());
             if (addrSpaceEndpoint.getService().equals(String.format("%s-%s", endpointService, infraUuid))) {
                 if (addrSpaceEndpoint.getHost() == null) {
                     return null;
