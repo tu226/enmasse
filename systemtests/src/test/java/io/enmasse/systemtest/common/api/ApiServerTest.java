@@ -100,7 +100,7 @@ class ApiServerTest extends TestBase {
                 new AddressSpaceEndpoint(endpointPrefix + "messaging", "messaging", "amqps"),
                 new AddressSpaceEndpoint(endpointPrefix + "console", "console", "https"),
                 new AddressSpaceEndpoint(endpointPrefix + "mqtt", "mqtt", "secure-mqtt")));
-        addressSpace = createAddressSpace(addressSpace);
+        createAddressSpace(addressSpace);
 
         UserCredentials luckyUser = new UserCredentials("lucky", "luckyPswd");
         createUser(addressSpace, luckyUser);

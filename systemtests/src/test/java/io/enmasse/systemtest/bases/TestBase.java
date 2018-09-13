@@ -138,11 +138,11 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
     //==================================== AddressSpace methods ======================================
     //================================================================================================
 
-    protected AddressSpace createAddressSpace(AddressSpace addressSpace) throws Exception {
-        return createAddressSpace(addressSpace, addressApiClient);
+    protected void createAddressSpace(AddressSpace addressSpace) throws Exception {
+        createAddressSpace(addressSpace, addressApiClient);
     }
 
-    protected List<AddressSpace> createAddressSpaceList(AddressSpace... addressSpaces) throws Exception {
+    protected void createAddressSpaceList(AddressSpace... addressSpaces) throws Exception {
         String operationID = TimeMeasuringSystem.startOperation(Operation.CREATE_ADDRESS_SPACE);
         List<AddressSpace> addrSpacesResponse = new ArrayList<>();
         ArrayList<AddressSpace> spaces = new ArrayList<>();
@@ -175,10 +175,9 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
             log.info(String.format("Address-space successfully created: %s", originalAddrSpace));
         });
         TimeMeasuringSystem.stopOperation(operationID);
-        return addrSpacesResponse;
     }
 
-    protected AddressSpace createAddressSpace(AddressSpace addressSpace, AddressApiClient apiClient) throws Exception {
+    protected void createAddressSpace(AddressSpace addressSpace, AddressApiClient apiClient) throws Exception {
         String operationID = TimeMeasuringSystem.startOperation(Operation.CREATE_ADDRESS_SPACE);
         AddressSpace addrSpaceResponse;
         if (!TestUtils.existAddressSpace(apiClient, addressSpace.getName())) {
@@ -199,7 +198,7 @@ public abstract class TestBase implements ITestBase, ITestSeparator {
         }
         log.info("Address-space successfully created: '{}'", addressSpace);
         TimeMeasuringSystem.stopOperation(operationID);
-        return addrSpaceResponse;
+        addressSpace.setInfraUuid(addrSpaceResponse.getInfraUuid());
     }
 
     //!TODO: protected void appendAddressSpace(...)
