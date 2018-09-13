@@ -63,7 +63,11 @@ public abstract class Kubernetes {
     }
 
     public Endpoint getEndpoint(String serviceName, String port) {
-        Service service = client.services().inNamespace(globalNamespace).withName(serviceName).get();
+        return getEndpoint(serviceName, globalNamespace, port);
+    }
+
+    public Endpoint getEndpoint(String serviceName, String namespace, String port) {
+        Service service = client.services().inNamespace(namespace).withName(serviceName).get();
         return new Endpoint(service.getSpec().getClusterIP(), getPort(service, port));
     }
 
@@ -627,7 +631,7 @@ public abstract class Kubernetes {
     public Endpoint createServiceFromResource(String namespace, Service resources) {
         Service serRes = client.services().inNamespace(namespace).create(resources);
         log.info("Service {} created", serRes.getMetadata().getName());
-        return getEndpoint(serRes.getMetadata().getName(), "http");
+        return getEndpoint(serRes.getMetadata().getName(), namespace, "http");
     }
 
     /***
