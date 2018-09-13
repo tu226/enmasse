@@ -212,9 +212,7 @@ function is_role_normal (c) {
 var internal_identifiers = ['^agent.[a-z0-9]+$', '^ragent$', '^qdconfigd$', '^subserv.[a-z0-9]+$', '^lwt-service.[a-z0-9]+$'];
 
 function is_internal_identifier (s) {
-    return internal_identifiers.find(function(r) {
-        return s.match(r);
-    }) !== undefined;
+    return s !== undefined && (internal_identifiers.find(function(r) { return s.match(r); }) !== undefined);
 }
 
 function is_internal (c) {
