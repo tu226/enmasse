@@ -209,10 +209,10 @@ function is_role_normal (c) {
     return c.role === 'normal';
 }
 
-var internal_identifiers = ['agent', 'ragent', 'qdconfigd', 'subserv', 'lwt-service'];
+var internal_identifiers = ['^agent.[a-z0-9]+$', '^ragent$', '^qdconfigd$', '^subserv.[a-z0-9]+$', '^lwt-service.[a-z0-9]+$'];
 
 function is_internal_identifier (s) {
-    return internal_identifiers.indexOf(s) >= 0;
+    return internal_identifiers.match(s);
 }
 
 function is_internal (c) {
