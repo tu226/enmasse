@@ -116,7 +116,7 @@ public class HttpAddressServiceBase {
             }
 
             if (address.getName() == null) {
-                builder.setName(Address.generateName(addressSpace, address.getAddress()));
+                builder.setName(Address.generateName(namespace, addressSpace, address.getAddress()));
             }
 
             address = builder.build();

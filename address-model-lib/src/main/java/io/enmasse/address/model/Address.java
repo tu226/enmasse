@@ -306,8 +306,8 @@ public class Address {
         }
     }
 
-    public static String generateName(String addressSpace, String address) {
+    public static String generateName(String namespace, String addressSpace, String address) {
         String uuid = UUID.nameUUIDFromBytes(address.getBytes(StandardCharsets.UTF_8)).toString();
-        return KubeUtil.sanitizeName(addressSpace) + "." + KubeUtil.sanitizeName(address) + "." + uuid;
+        return KubeUtil.sanitizeName(namespace) + "." + KubeUtil.sanitizeName(addressSpace) + "." + KubeUtil.sanitizeName(address) + "." + uuid;
     }
 }

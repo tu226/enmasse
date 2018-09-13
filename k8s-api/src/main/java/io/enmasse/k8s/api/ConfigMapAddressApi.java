@@ -139,7 +139,6 @@ public class ConfigMapAddressApi implements AddressApi, ListerWatcher<ConfigMap,
     }
 
     private String getConfigMapName(String name) {
-        // TODO: Use UUID
         return name;
     }
 

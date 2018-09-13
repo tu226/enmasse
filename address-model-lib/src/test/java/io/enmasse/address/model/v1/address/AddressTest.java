@@ -49,6 +49,7 @@ public class AddressTest {
     @Test
     public void testSanitizer() {
         Address b1 = new Address.Builder()
+                .setNamespace("ns1")
                 .setAddress("myAddr_-")
                 .setAddressSpace("myspace")
                 .setPlan("p1")
@@ -56,6 +57,7 @@ public class AddressTest {
                 .build();
 
         Address b2 = new Address.Builder()
+                .setNamespace("ns1")
                 .setAddress(b1.getAddress())
                 .setAddressSpace("myspace")
                 .setName(b1.getName())
@@ -63,9 +65,9 @@ public class AddressTest {
                 .setType(b1.getType())
                 .build();
         assertNull(b1.getName());
-        String generated = Address.generateName(b1.getAddressSpace(), b1.getAddress());
+        String generated = Address.generateName(b1.getNamespace(), b1.getAddressSpace(), b1.getAddress());
         System.out.println(generated);
-        assertTrue(generated.startsWith("myspace.myaddr1."));
+        assertTrue(generated.startsWith("ns1.myspace.myaddr1."));
         assertThat(b1.getName(), is(b2.getName()));
         assertThat(b1.getAddress(), is(b2.getAddress()));
         assertThat(b1.getPlan(), is(b2.getPlan()));
